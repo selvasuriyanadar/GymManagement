@@ -1,0 +1,209 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using GymManagementUserControls;
+using GymManagementHILogic;
+using MaterialDesignThemes.Wpf;
+
+namespace GymManagement
+{
+  public class MainWindowUpdates
+  {
+    MainWindow main_window;
+    public MainWindowUpdates(MainWindow main_window)
+    {
+      this.main_window = main_window;
+    }
+
+    public void UpdateMainBody(string comp, AppState app_state)
+    {
+      main_window.MainBody.Children.Clear();
+      UserControl usc = new UserControl();
+
+      switch (comp)
+      {
+        case "Dashboard":
+          main_window.MainBody.Children.Add(new Dashboard((DashboardState)app_state));
+          break;
+        case "RegistrationPage": 
+          TraineeRegistrationState trainee_reg_state = (TraineeRegistrationState)app_state;
+          RegistrationPage reg_page = new RegistrationPage((TraineeRegistrationState)app_state);
+          RegistrationPageUpdates reg_page_updates = new RegistrationPageUpdates(reg_page);
+          trainee_reg_state.LoadRegistrationPageUpdates(reg_page_updates);
+          trainee_reg_state.InitiatePaymentPanel();
+          trainee_reg_state.EnterJoiningDate(DateTime.Today);
+          trainee_reg_state.SelectPhoto(null);
+          main_window.MainBody.Children.Add(reg_page);
+          break;
+        case "ProfilePage":
+          main_window.MainBody.Children.Add(new ProfilePage((ProfilePageState)app_state));
+          break;
+        case "Trainees":
+          main_window.MainBody.Children.Add(new TraineeListing((TraineeListingState)app_state));
+          break;
+        default:
+          main_window.MainBody.Children.Add(usc);
+          break;
+      }
+    }
+
+    public void UpdateListViewMenu(int menu_index)
+    {
+      main_window.ListViewMenu.SelectionChanged -= main_window.ListViewMenu_SelectionChanged;
+      main_window.ListViewMenu.SelectedIndex = menu_index;
+      main_window.ListViewMenu.SelectionChanged += main_window.ListViewMenu_SelectionChanged;
+    }
+  }
+
+  public class MenuPageNavigation : AppState
+  {
+    Navigation navigation = new Navigation();
+    AppStore app_store = new AppStore();
+    AppStateManager app_state_manager =  new AppStateManager();
+
+    MainWindowUpdates main_window_updates;
+
+    public void LoadMainWindowUpdates(MainWindowUpdates main_window_updates)
+    {
+      this.main_window_updates = main_window_updates;
+    }
+
+    private AppState? GetState(string name)
+    {
+      switch (name)
+      {
+        case "Dashboard":
+          return new DashboardState(() => { OpenPageWithinCurrentMenu("RegistrationPage"); },
+              app_store);
+        case "RegistrationPage":
+          return new TraineeRegistrationState(() => { OpenPageWithinCurrentMenu("ProfilePage"); },
+              app_store);
+        case "Trainees":
+          return new TraineeListingState(app_store);
+        case "ProfilePage":
+          return new ProfilePageState(app_store);
+      }
+      return null;
+    }
+
+    private void GenerateComponent(string menu, string? page)
+    {
+      if (page == null)
+      {
+        app_state_manager.SetState(GetState(menu));
+
+        main_window_updates.UpdateMainBody(navigation.getActiveComponentName(), app_state_manager.GetState(menu, page));
+        main_window_updates.UpdateListViewMenu(navigation.getCurrentMenuIndex());
+      }
+    }
+
+    public void Navigate(string menu)
+    {
+      navigation.NavigateToMenu(menu);
+
+      var comp = navigation.getActiveComponent();
+      menu = comp.Item1;
+      var page = comp.Item2;
+      if (app_state_manager.DoesCacheExist(menu, page))
+      {
+        main_window_updates.UpdateMainBody(navigation.getActiveComponentName(), app_state_manager.GetState(menu, page));
+        main_window_updates.UpdateListViewMenu(navigation.getCurrentMenuIndex());
+      }
+      else
+      {
+        GenerateComponent(menu, page);
+      }
+    }
+
+    public void OpenPageWithinCurrentMenu(String page, AppState app_state)
+    {
+      navigation.OpenPage(page);
+
+      var comp = navigation.getActiveComponent();
+      var menu = comp.Item1;
+      page = comp.Item2;
+      main_window_updates.UpdateMainBody(navigation.getActiveComponentName(), app_state_manager.GetState(menu, page, app_state));
+      main_window_updates.UpdateListViewMenu(navigation.getCurrentMenuIndex());
+    }
+
+    public void ReturnToRoot()
+    {
+      navigation.ClearOpenPage();
+
+      var comp = navigation.getActiveComponent();
+      var menu = comp.Item1;
+      var page = comp.Item2;
+      main_window_updates.UpdateMainBody(navigation.getActiveComponentName(), app_state_manager.GetState(menu, page));
+      main_window_updates.UpdateListViewMenu(navigation.getCurrentMenuIndex());
+    }
+  }
+
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class MainWindow : Window
+  {
+    ///State
+    MenuPageNavigation menuPageNavigation;
+
+    public MainWindow()
+    {
+      menuPageNavigation = new MenuPageNavigation();
+      var main_window_updates = new MainWindowUpdates(this);
+      InitializeComponent();
+
+      menuPageNavigation.LoadMainWindowUpdates(main_window_updates);
+      menuPageNavigation.Navigate("Dashboard");
+    }
+
+    ///Controller + Events
+
+    public void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      var result = ((ListViewItem)((ListView)sender).SelectedItem).Name;
+
+      ((ListView)sender).SelectionChanged -= ListViewMenu_SelectionChanged;
+      ((ListView)sender).SelectedItem = null;
+      ((ListView)sender).SelectionChanged += ListViewMenu_SelectionChanged;
+
+      menuPageNavigation.Navigate(result);
+
+      e.Handled = true;
+    }
+
+    // triggers when a selected menu item is clicked
+    private void OnListViewMenuItemClicked(object sender, MouseButtonEventArgs e)
+    {
+      var item = sender as ListViewItem;
+      if (item != null && item.IsSelected)
+      {
+        menuPageNavigation.ReturnToRoot();
+      }
+    }
+
+    ///Stateless Command
+
+    private void ButtonOpenMenu_Click(object sender, RoutedEventArgs e)
+    {
+      ButtonCloseMenu.Visibility = Visibility.Visible;
+      ButtonOpenMenu.Visibility = Visibility.Collapsed;
+    }
+
+    private void ButtonCloseMenu_Click(object sender, RoutedEventArgs e)
+    {
+      ButtonCloseMenu.Visibility = Visibility.Collapsed;
+      ButtonOpenMenu.Visibility = Visibility.Visible;
+    }
+  }
+}

@@ -1,0 +1,613 @@
+<UserControl x:Class="GymManagementUserControls.RegistrationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:GymManagementUserControls"
+    mc:Ignorable="d"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    Background="{DynamicResource MaterialDesignPaper}"
+    TextElement.FontWeight="Medium"
+    TextElement.FontSize="14"
+    FontFamily="{materialDesign:MaterialDesignFont}"
+    >
+  <UserControl.Resources>
+    <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <ContentPresenter/>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="30"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <materialDesign:Card
+      Margin="12 32 0 8"
+      Padding="50 80 50 30"
+      Background="White">
+    <StackPanel>
+      <materialDesign:Transitioner
+        Name="TraineeDetailsTransitioner"
+        SelectedIndex="0"
+        AutoApplyTransitionOrigins="True">
+      <materialDesign:Transitioner.InputBindings>
+        <KeyBinding
+          Key="Left"
+          Command="{x:Static materialDesign:Transitioner.MovePreviousCommand}" />
+        <KeyBinding
+          Key="Right"
+          Command="{x:Static materialDesign:Transitioner.MoveNextCommand}" />
+      </materialDesign:Transitioner.InputBindings>
+
+      <StackPanel>
+        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Padding="0 16 0 30">
+          Photo
+        </TextBlock>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="32"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+
+          <StackPanel
+              Grid.RowSpan="2"
+              Grid.ColumnSpan="3">
+            <Button Click="ImageButton_Click" Style="{StaticResource ImageButtonStyle}">
+              <Ellipse Width="250" Height="250">
+                <Ellipse.Fill>
+                  <ImageBrush x:Name="ImgReceiver"/>
+                </Ellipse.Fill>
+              </Ellipse>
+            </Button>
+          </StackPanel>
+
+          <Button Command="{x:Static materialDesign:Transitioner.MoveNextCommand}"
+              Grid.Column="2"
+              Grid.Row="3">
+            NEXT
+          </Button>
+        </Grid>
+      </StackPanel>
+
+      <StackPanel>
+        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Padding="0 16 0 30">
+          Profile Details
+        </TextBlock>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="32"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+
+          <StackPanel>
+            <TextBox
+                x:Name="FirstName"
+                Margin="0 16 0 16"
+                TextChanged="Text_Changed"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                materialDesign:HintAssist.Hint="First Name"
+                />
+            <TextBlock x:Name="FirstNameError" Visibility="Collapsed" FontSize="12" Foreground="Red">
+            </TextBlock>
+          </StackPanel>
+          <StackPanel
+              Grid.Column="2">
+            <TextBox
+                Margin="0 16 0 16"
+                TextChanged="Text_Changed"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                materialDesign:HintAssist.Hint="Last Name"
+                x:Name="LastName"
+                />
+          </StackPanel>
+
+          <TextBox
+              Margin="0 16 0 16"
+              TextChanged="Int_Changed"
+              Grid.Row="1"
+              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+              materialDesign:HintAssist.Hint="Age"
+              x:Name="Age"
+              />
+          <WrapPanel
+              Margin="0 26 0 16"
+              Grid.Column="2"
+              Grid.Row="1"
+              Orientation="Horizontal">
+            <RadioButton
+              x:Name="SexMale"
+              Margin="4 0 4 0"
+              Checked="TraineeDetailsSexSelectionChanged"
+              Style="{StaticResource MaterialDesignChoiceChipPrimaryRadioButton}"
+              GroupName="GroupChoiceChip"
+              Content="Male"/>
+            <RadioButton
+              x:Name="SexFemale"
+              Margin="4 0 4 0"
+              Checked="TraineeDetailsSexSelectionChanged"
+              Style="{StaticResource MaterialDesignChoiceChipAccentRadioButton}"
+              GroupName="GroupChoiceChip"
+              Content="Female"/>
+          </WrapPanel>
+
+          <DatePicker
+              SelectedDateChanged="JoiningDate_Changed" 
+              x:Name="JoiningDate"
+              Margin="0 16 0 16"
+              Grid.Row="2"
+              materialDesign:HintAssist.Hint="Joining Date"
+              Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+
+          <Button Command="{x:Static materialDesign:Transitioner.MovePreviousCommand}"
+              Style="{StaticResource MaterialDesignOutlinedButton}"
+              Grid.Row="4">
+            PREV
+          </Button>
+          <Button Command="{x:Static materialDesign:Transitioner.MoveNextCommand}"
+              Grid.Column="2"
+              Grid.Row="4">
+            NEXT
+          </Button>
+        </Grid>
+      </StackPanel>
+      <StackPanel
+          Grid.Row="2">
+        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Padding="0 16 0 30">
+          Contact Details
+        </TextBlock>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="32"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+
+          <TextBox
+              x:Name="Phone"
+              Margin="0 16 0 16"
+              TextChanged="Text_Changed"
+              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+              materialDesign:HintAssist.Hint="Phone"
+              />
+          <TextBox
+              x:Name="Email"
+              Margin="0 16 0 16"
+              TextChanged="Text_Changed"
+              Grid.Column="2"
+              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+              materialDesign:HintAssist.Hint="Email"
+              />
+
+          <TextBox
+              x:Name="Address"
+              Margin="0 16 0 16"
+              TextChanged="Text_Changed"
+              Grid.Row="1"
+              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+              materialDesign:HintAssist.Hint="Address"
+              />
+          <TextBox
+              x:Name="City"
+              Margin="0 16 0 16"
+              TextChanged="Text_Changed"
+              Grid.Row="1"
+              Grid.Column="2"
+              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+              materialDesign:HintAssist.Hint="City"
+              />
+
+          <Button Command="{x:Static materialDesign:Transitioner.MovePreviousCommand}"
+              Style="{StaticResource MaterialDesignOutlinedButton}"
+              Grid.Row="3">
+            PREV
+          </Button>
+          <Button Command="{x:Static materialDesign:Transitioner.MoveNextCommand}"
+              Grid.Column="2"
+              Grid.Row="3">
+            NEXT
+          </Button>
+        </Grid>
+      </StackPanel>
+      <StackPanel
+          Grid.Row="2">
+        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Padding="0 16 0 30">
+          Comments
+        </TextBlock>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="32"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+
+          <TextBox
+            x:Name="Comments"
+            TextChanged="Text_Changed"
+            Grid.ColumnSpan="3"
+            TextWrapping="Wrap"
+            VerticalAlignment="Stretch"
+            AcceptsReturn="True"
+            VerticalScrollBarVisibility="Auto"
+            SpellCheck.IsEnabled="True"
+            materialDesign:HintAssist.Hint="Enter your comments here."
+            Height="80"/>
+
+          <Button Command="{x:Static materialDesign:Transitioner.MovePreviousCommand}"
+              Style="{StaticResource MaterialDesignOutlinedButton}"
+              Grid.Row="2">
+            PREV
+          </Button>
+        </Grid>
+      </StackPanel>
+      </materialDesign:Transitioner>
+    </StackPanel>
+    </materialDesign:Card>
+
+    <Border
+        Grid.Column="2"
+        Grid.RowSpan="3"
+        Margin="0 32 12 8"
+        Padding="50 0 50 30">
+      <StackPanel>
+        <TextBlock Foreground="{StaticResource MaterialDesignBodyLight}"
+            FontSize="12"
+            Padding="0 8 0 8">
+          Payment Details
+        </TextBlock>
+
+        <StackPanel
+            Margin="0 30 0 30">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="SubscriptionProductPlan" Style="{StaticResource MaterialDesignBody2TextBlock}">
+            </TextBlock>
+            <TextBlock x:Name="SubscriptionInitialDate" Style="{StaticResource MaterialDesignBody2TextBlock}"
+                Grid.Column="2">
+            </TextBlock>
+          </Grid>
+          <TextBox
+              materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+              TextChanged="Amount_Changed"
+              MaxLength="9"
+              x:Name="SubscriptionAmount"
+              Margin="0 16 0 0"
+              Style="{StaticResource MaterialDesignFilledTextBox}"
+              materialDesign:HintAssist.Hint="Amount"
+              />
+        </StackPanel>
+
+        <StackPanel
+            Margin="0 30 0 30">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Foreground="{StaticResource MaterialDesignBodyLight}"
+                Padding="4 0 0 0"
+                Text="Total"/>
+
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                x:Name="Total"
+                Grid.Column="2"/>
+          </Grid>
+        </StackPanel>
+
+        <StackPanel
+          Margin="0 30 0 30">
+          <StackPanel
+              Margin="0 0 0 30">
+            <StackPanel Orientation="Horizontal">
+              <materialDesign:PackIcon Kind="GiftOpenOutline"
+                  Foreground="{StaticResource PrimaryHueLightBrush}"/>
+              <TextBlock
+                Foreground="{StaticResource PrimaryHueLightBrush}"
+                Padding="4 0 0 0"
+                Text="Discount"/>
+            </StackPanel>
+            <TextBox
+              TextChanged="Amount_Changed"
+              materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+              MaxLength="9"
+              x:Name="SubscriptionDiscount"
+              Margin="8 0 0 0"/>
+          </StackPanel>
+
+          <StackPanel
+              Margin="0 0 0 30">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+              </Grid.ColumnDefinitions>
+
+              <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Cash"
+                    Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                <TextBlock
+                  x:Name="AdvanceProduct"
+                  Foreground="{StaticResource PrimaryHueLightBrush}"
+                  Padding="4 0 0 0"/>
+              </StackPanel>
+
+              <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="GiftOpenOutline"
+                    Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                <TextBlock
+                  Foreground="{StaticResource PrimaryHueLightBrush}"
+                  Padding="4 0 0 0"
+                  Text="Discount"/>
+              </StackPanel>
+            </Grid>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+              </Grid.ColumnDefinitions>
+
+              <TextBox
+                TextChanged="Amount_Changed"
+                materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                MaxLength="9"
+                x:Name="AdvanceAmount"
+                Margin="12 0 0 0"/>
+              <TextBox
+                TextChanged="Amount_Changed"
+                materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                MaxLength="9"
+                x:Name="AdvanceDiscount"
+                Grid.Column="1"
+                Margin="12 0 0 0"/>
+            </Grid>
+          </StackPanel>
+
+          <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+
+              <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Dumbbell"
+                    Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                <TextBlock
+                  x:Name="GymProteinBodyPowderProduct"
+                  Foreground="{StaticResource PrimaryHueLightBrush}"
+                  Padding="4 0 0 0"/>
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal"
+                  x:Name="SupplementDiscountHeader"
+                  Grid.Column="1">
+                <materialDesign:PackIcon Kind="GiftOpenOutline"
+                    Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                <TextBlock
+                  Foreground="{StaticResource PrimaryHueLightBrush}"
+                  Padding="4 0 0 0"
+                  Text="Discount"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal"
+                  Visibility="Collapsed"
+                  x:Name="SupplementLendAmountHeader"
+                  Grid.Column="1">
+                <materialDesign:PackIcon Kind="HandshakeOutline"
+                    Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                <TextBlock
+                  Foreground="{StaticResource PrimaryHueLightBrush}"
+                  Padding="4 0 0 0"
+                  Text="Lend and Pay"/>
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal"
+                  Visibility="Collapsed"
+                  x:Name="SupplementLendDiscountHeader"
+                  Grid.Column="2">
+                <materialDesign:PackIcon Kind="GiftOpenOutline"
+                    Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                <TextBlock
+                  Foreground="{StaticResource PrimaryHueLightBrush}"
+                  Padding="4 0 0 0"
+                  Text="Discount"/>
+              </StackPanel>
+
+            </Grid>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+
+              <TextBox
+                TextChanged="Amount_Changed"
+                materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                MaxLength="9"
+                x:Name="SupplementAmount"
+                Margin="12 0 0 0"/>
+
+              <TextBox
+                TextChanged="Amount_Changed"
+                materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                MaxLength="9"
+                x:Name="SupplementDiscount"
+                Grid.Column="1"
+                Margin="12 0 0 0"/>
+              <TextBox
+                Visibility="Collapsed"
+                TextChanged="Amount_Changed"
+                materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                MaxLength="9"
+                x:Name="SupplementLendAmount"
+                Grid.Column="1"
+                Margin="12 0 0 0"/>
+
+              <Grid
+                Margin="12 0 0 0"
+                Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox
+                  Visibility="Collapsed"
+                  TextChanged="Amount_Changed"
+                  materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                  MaxLength="9"
+                  x:Name="SupplementLendDiscount"
+                  />
+
+                <Button
+                  x:Name="SupplementLendAndPayCancelButton"
+                  Visibility="Collapsed"
+                  Click="OnSupplementLendAndPayCancelButton_Clicked"
+                  Grid.Column="1"
+                  Margin="0 4 0 0"
+                  Height="28"
+                  Width="28"
+                  Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                  ToolTip="Cancel Lent">
+                  <materialDesign:PackIcon
+                    Kind="HandshakeOutline"
+                    Height="14"
+                    Width="14" />
+                </Button>
+              </Grid>
+              <materialDesign:Chip
+                Grid.Column = "2"
+                Margin="8 0 0 0"
+                Click="OnSupplementLendAndPayButton_Clicked"
+                x:Name="SupplementLendAndPayButton"
+                Content="Lend and Pay"
+                IconBackground="{DynamicResource SecondaryHueMidBrush}"
+                IconForeground="{DynamicResource SecondaryHueMidForegroundBrush}">
+                <materialDesign:Chip.Icon>
+                  <materialDesign:PackIcon
+                    Kind="HandshakeOutline" />
+                </materialDesign:Chip.Icon>
+              </materialDesign:Chip>
+            </Grid>
+          </StackPanel>
+        </StackPanel>
+
+        <Grid
+            Margin="8 30 0 0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+
+          <Border
+              x:Name="PaymentCompleteChip"
+              Visibility="Hidden"
+              Padding="16"
+              CornerRadius="32"
+              Background="{StaticResource SecondaryHueMidBrush}">
+            <WrapPanel VerticalAlignment="Center">
+              <materialDesign:PackIcon Kind="CheckCircle" Height="24" Width="24"/>
+              <TextBlock VerticalAlignment="Center"
+                Margin="8 0 0 0"
+                Foreground="{StaticResource SecondaryHueMidForegroundBrush}">
+                Payment Complete
+              </TextBlock>
+            </WrapPanel>
+          </Border>
+
+          <StackPanel
+              Orientation="Horizontal"
+              Grid.Column = "2">
+            <Button
+                Margin="0 0 8 0"
+                Click="OnPayLaterButton_Clicked"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
+                x:Name="PayLaterButton">
+              Pay Later
+            </Button>
+            <Button
+                Margin="0 0 8 0"
+                Click="OnRegisterAgainButton_Clicked"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
+                x:Name="RegisterAnotherClientButton"
+                Visibility="Collapsed">
+              Register Again
+            </Button>
+
+            <Button
+                Margin="0 0 8 0"
+                Click="OnSubmitButton_Clicked"
+                x:Name="CompletePaymentButton">
+              Complete Payment
+            </Button>
+            <Button
+                Margin="0 0 8 0"
+                x:Name="PrintBillButton"
+                Visibility="Collapsed">
+              Print Bill
+            </Button>
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+    </Border>
+    <materialDesign:Snackbar
+      x:Name="SnackBar"
+      Grid.ColumnSpan="3"
+      MessageQueue="{materialDesign:MessageQueue}">
+    </materialDesign:Snackbar>
+  </Grid>
+</UserControl>

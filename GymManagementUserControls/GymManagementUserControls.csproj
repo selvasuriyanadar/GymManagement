@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\*.png" />
+    <Resource Include="Resources\Images\*.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.7" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GymManagementDataModel\GymManagementDataModel.csproj" />
+    <ProjectReference Include="..\GymManagementLogic\GymManagementLogic.csproj" />
+    <ProjectReference Include="..\GymManagementHILogic\GymManagementHILogic.csproj" />
+    <ProjectReference Include="..\GymManagementSystem\GymManagementSystem.csproj" />
+    <ProjectReference Include="..\GymManagementApi\GymManagementApi.csproj" />
+    <ProjectReference Include="..\GymManagementDataStore\GymManagementDataStore.csproj" />
+  </ItemGroup>
+</Project>

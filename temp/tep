@@ -1,0 +1,381 @@
+using System;
+using System.Collections.Generic;
+
+namespace GymManagementDataModel
+{
+  public class PayData
+  {
+    public int? penalty;
+    public int? discount;
+    public DateTime? pay_date;
+
+    public void Copy(PaymentProgressData d)
+    {
+      d.pay_date = pay_date;
+      d.penalty = penalty;
+      d.discount = discount;
+    }
+
+    // penalty and discount cannot be negative
+    // pay_date is required
+    //
+    public Dictionary<String, PaymentData.Error> Validate()
+    {
+      var errors = new Dictionary<String, PaymentData.Error>();
+
+      if (penalty != null && penalty < 0)
+      {
+        errors.Add("penalty", PaymentData.Error.AmountTooSmall);
+      }
+
+      if (discount != null && discount < 0)
+      {
+        errors.Add("discount", PaymentData.Error.AmountTooSmall);
+      }
+
+      if (pay_date == null)
+      {
+        errors.Add("pay_date", PaymentData.Error.IsRequired);
+      }
+
+      return errors;
+    }
+  }
+
+  public class LendPayData
+  {
+    public enum PaymentStatus
+    {
+      Paid,
+    }
+
+    public PaymentStatus? payment_status;
+    public int? amount;
+
+    public PayData pay_data = new PayData();
+
+    public void Pay()
+    {
+      payment_status = PaymentStatus.Paid;
+    }
+
+    public void Copy(LendPaymentData d)
+    {
+      d.payment_status = payment_status;
+      d.amount = amount;
+
+      pay_data.Copy(d.pay_data);
+    }
+
+    // payment_status, amount, are required
+    // pay_data should be valid
+    //
+    public Dictionary<String, PaymentData.Error> Validate()
+    {
+      var errors = new Dictionary<String, PaymentData.Error>();
+
+      if (payment_status == null)
+      {
+        errors.Add("payment_status", PaymentData.Error.IsRequired);
+      }
+
+      if (amount == null)
+      {
+        errors.Add("amount", PaymentData.Error.IsRequired);
+      }
+      else if (amount < 0)
+      {
+        errors.Add("amount", PaymentData.Error.AmountTooSmall);
+      }
+
+      if (pay_data.Validate.Count != 0)
+      {
+        errors.Add("pay_data", PaymentData.Error.InvalidData);
+      }
+
+      return errors;
+    }
+  }
+
+  private class LendPayDataList
+  {
+    public List<LendPayData> lend_pay_data_list = new List<LendPayData>();
+
+    public void Copy(LendPayDataList d)
+    {
+      foreach (var lp in lend_pay_data_list)
+      {
+        var lp_copy = new LendPayData();
+        lp.Copy(lp_copy);
+        d.lend_pay_data_list.Add(lp_copy);
+      }
+    }
+
+    public int GetTotal()
+    {
+      int sum = 0;
+      foreach (var lp in lend_pay_data_list)
+      {
+        sum += lp.amount;
+      }
+      return sum;
+    }
+
+    // all lend_pay_data shall be valid
+    //
+    public Dictionary<String, PaymentData.Error> Validate()
+    {
+      var errors = new Dictionary<String, PaymentData.Error>();
+
+      foreach (var lp in lend_pay_data_list)
+      {
+        if (lp.Validate.Count != 0)
+        {
+          errors.Add("lend_pay_data_list", PaymentData.Error.InvalidData);
+          break;
+        }
+      }
+
+      return errors;
+    }
+  }
+
+  public class PaymentData
+  {
+    public enum PaymentStatus
+    {
+      Paid,
+      NotPaid,
+      Lent,
+      LentReturned,
+    }
+
+    public int? _id;
+
+    public PaymentStatus payment_status = PaymentStatus.NotPaid;
+    public DateTime? date_of_payment;
+    public int? amount;
+
+    public PayData? pay_data;
+    public LendPayDataList? lend_pay_data_list;
+
+    public void Copy(PaymentData d)
+    {
+      d._id = _id;
+
+      d.payment_status = payment_status;
+      d.date_of_payment = date_of_payment;
+      d.amount = amount;
+
+      if (pay_data != null)
+      {
+        d.pay_data = new PayData();
+        pay_data.Copy(d.pay_data);
+      }
+      else
+      {
+        d.pay_data = null;
+      }
+
+      if (lend_pay_data_list != null)
+      {
+        d.lend_pay_data_list = new LendPayDataList();
+        lend_pay_data_list.Copy(d.lend_pay_data_list);
+      }
+      else
+      {
+        d.lend_pay_data_list = null;
+      }
+    }
+
+    public enum Error
+    {
+      IsRequired,
+      AmountTooSmall,
+      AmountTooBig,
+      InvalidData,
+      IsRequiredToBeNull,
+      TotalLentPaidAmountEqualsLentedPaymentAmount,
+      TotalLentPaidAmountNotEqualsLentReturnedPaymentAmount,
+    }
+
+    // date_of_payment and amount are required
+    // amount can not be negative
+    //
+    private Dictionary<String, Error> SelfValidate()
+    {
+      var errors = new Dictionary<String, Error>();
+
+      if (date_of_payment == null)
+      {
+        errors.Add("date_of_payment", Error.IsRequired);
+      }
+
+      if (amount == null)
+      {
+        errors.Add("amount", Error.IsRequired);
+      }
+      else if (amount < 0)
+      {
+        errors.Add("amount", Error.AmountTooSmall);
+      }
+
+      return errors;
+    }
+
+    private Dictionary<String, Error> ValidatePaymentStatus()
+    {
+      var errors = new Dictionary<String, Error>();
+
+      // pay_data shall only be present with Paid PaymentStatus
+      // when present pay_data shall be valid
+      //
+      if (payment_status != PaymentStatus.Paid)
+      {
+        if (pay_data != null)
+        {
+          errors.Add("pay_data", Error.IsRequiredToBeNull);
+        }
+      }
+      else
+      {
+        if (pay_data == null)
+        {
+          errors.Add("pay_data", Error.IsRequired);
+        }
+        else if (payment_status == PaymentStatus.Paid)
+        {
+          foreach (var error in ValidatePayData(pay_data))
+          {
+            errors.Add(error.Key, error.Value);
+          }
+        }
+      }
+
+      // lend_pay_data_list shall only be present with Lent, LentReturned PaymentStatus
+      // when present lend_pay_data_list shall be valid
+      //
+      if (payment_status != PaymentStatus.Lent && payment_status != PaymentStatus.LentReturned)
+      {
+        if (lend_pay_data_list != null)
+        {
+          errors.Add("lend_pay_data_list", Error.IsRequiredToBeNull);
+        }
+      }
+      else
+      {
+        if (lend_pay_data_list == null)
+        {
+          errors.Add("lend_pay_data_list", Error.IsRequired);
+        }
+        else if (payment_status == PaymentStatus.Lent)
+        {
+          foreach (var error in ValidateLendPayData(lend_pay_data_list))
+          {
+            errors.Add(error.Key, error.Value);
+          }
+        }
+        else if (payment_status == PaymentStatus.LentReturned)
+        {
+          foreach (var error in ValidateReturnedLendPayData(lend_pay_data_list))
+          {
+            errors.Add(error.Key, error.Value);
+          }
+        }
+      }
+
+      return errors;
+    }
+
+    public Dictionary<String, Error> Validate()
+    {
+      var errors = new Dictionary<String, Error>();
+
+      foreach (var error in SelfValidate())
+      {
+        errors.Add(error.Key, error.Value);
+      }
+
+      if (errors.Count == 0)
+      {
+        foreach (var error in ValidatePaymentStatus())
+        {
+          errors.Add(error.Key, error.Value);
+        }
+      }
+
+      return errors;
+    }
+
+    // pay_data shall be valid
+    // discount shall not exceed amount
+    //
+    public Dictionary<String, Error> ValidatePayData(PayData pd)
+    {
+      var errors = new Dictionary<String, Error>();
+
+      if (pd.Validate().Count != 0)
+      {
+        errors.Add("pay_data", Error.InvalidData);
+      }
+      else
+      {
+        if (pd.discount != null && amount < pd.discount)
+        {
+          errors.Add("pay_data.discount", Error.AmountTooBig);
+        }
+      }
+
+      return errors;
+    }
+
+    // lend_pay_data_list shall be valid
+    // total lent paid amount shall not exceed the original payment amount
+    // total lent paid amount shall not be equal to the original payment amount
+    //
+    public Dictionary<String, Error> ValidateLendPayData(LendPayDataList lp)
+    {
+      var errors = new Dictionary<String, Error>();
+
+      if (lp.Validate().Count != 0)
+      {
+        errors.Add("lend_pay_data_list", Error.InvalidData);
+      }
+      else
+      {
+        if (amount < lp.GetTotal())
+        {
+          errors.Add("lend_pay_data_list", Error.AmountTooBig);
+        }
+        else if (amount == lp.GetTotal())
+        {
+          errors.Add("lend_pay_data_list", Error.TotalLentPaidAmountEqualsLentedPaymentAmount);
+        }
+      }
+
+      return errors;
+    }
+
+    // lend_pay_data_list shall be valid
+    // total lent paid amount shall be equal to the original payment amount
+    //
+    public Dictionary<String, Error> ValidateReturnedLendPayData(LendPayDataList lp)
+    {
+      var errors = new Dictionary<String, Error>();
+
+      if (lp.Validate().Count != 0)
+      {
+        errors.Add("lend_pay_data_list", Error.InvalidData);
+      }
+      else
+      {
+        if (amount != lp.GetTotal())
+        {
+          errors.Add("lend_pay_data_list", Error.TotalLentPaidAmountNotEqualsLentReturnedPaymentAmount);
+        }
+      }
+
+      return errors;
+    }
+  }
+}

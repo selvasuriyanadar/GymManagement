@@ -1,0 +1,160 @@
+﻿<Window x:Class="GymManagement.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:GymManagement"
+    mc:Ignorable="d"
+    Title="AP Gym Management" Height="450" Width="800"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    Background="{DynamicResource MaterialDesignPaper}"
+    TextElement.FontWeight="Medium"
+    TextElement.FontSize="14"
+    FontFamily="{materialDesign:MaterialDesignFont}"
+    >
+
+    <Window.Resources>
+      <Storyboard x:Key="OpenMenu">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+          <EasingDoubleKeyFrame KeyTime="0" Value="70"/>
+          <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200"/>
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>
+      <Storyboard x:Key="CloseMenu">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+          <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+          <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="70"/>
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>
+    </Window.Resources>
+
+    <Window.Triggers>
+      <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonOpenMenu">
+        <BeginStoryboard Storyboard="{StaticResource OpenMenu}"/>
+      </EventTrigger>
+      <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonCloseMenu">
+        <BeginStoryboard Storyboard="{StaticResource CloseMenu}"/>
+      </EventTrigger>
+    </Window.Triggers>
+
+    <DockPanel>
+      <Grid x:Name="GridMenu"
+          Width="70"
+          DockPanel.Dock="Left"
+          Background="{DynamicResource PrimaryHueLightBrush}">
+        <StackPanel>
+          <Grid Height="150" Background="{DynamicResource MaterialDesignPaper}" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+              <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform/>
+                <TranslateTransform/>
+              </TransformGroup>
+            </Grid.RenderTransform>
+            <Button x:Name="ButtonOpenMenu"
+                Height="60" Width="60"
+                Margin="5"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                Background="{x:Null}" BorderBrush="{x:Null}"
+                Click="ButtonOpenMenu_Click"
+                >
+              <materialDesign:PackIcon Kind="Menu" Width="25" Height="25"/>
+            </Button>
+            <Button x:Name="ButtonCloseMenu"
+                Visibility="Collapsed"
+                Height="60" Width="60"
+                Margin="5"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                Background="{x:Null}" BorderBrush="{x:Null}"
+                Click="ButtonCloseMenu_Click"
+                >
+              <materialDesign:PackIcon Kind="ArrowLeft" Width="25" Height="25"/>
+            </Button>
+            <Image Height="80" VerticalAlignment="Bottom"/>
+          </Grid>
+
+          <ListView x:Name="ListViewMenu"
+              SelectionChanged="ListViewMenu_SelectionChanged"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemContainerStyle>
+              <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="OnListViewMenuItemClicked" />
+              </Style>
+            </ListView.ItemContainerStyle>
+            <ListViewItem x:Name="Dashboard" Height="60">
+              <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="ViewDashboard" Height="25" Width="25" Margin="10"/>
+                <TextBlock Text="Dashboard" VerticalAlignment="Center" Margin="20 10"/>
+              </StackPanel>
+            </ListViewItem>
+            <ListViewItem x:Name="Trainees" Height="60">
+              <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="WeightLifter" Height="25" Width="25" Margin="10"/>
+                <TextBlock Text="Trainees" VerticalAlignment="Center" Margin="20 10"/>
+              </StackPanel>
+            </ListViewItem>
+            <ListViewItem x:Name="Payments" Height="60">
+              <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="CashMultiple" Height="25" Width="25" Margin="10"/>
+                <TextBlock Text="Payments" VerticalAlignment="Center"  Margin="20 10"/>
+              </StackPanel>
+            </ListViewItem>
+            <ListViewItem x:Name="Notifications" Height="60">
+              <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Bell" Height="25" Width="25" Margin="10"/>
+                <TextBlock Text="Notifications" VerticalAlignment="Center"  Margin="20 10"/>
+              </StackPanel>
+            </ListViewItem>
+          </ListView>
+        </StackPanel>
+      </Grid>
+
+      <materialDesign:ColorZone
+          DockPanel.Dock="Top"
+          Padding="8"
+          Mode="PrimaryMid"
+          >
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+          </Grid.ColumnDefinitions>
+          <TextBlock
+              Grid.Row="0"
+              Grid.Column="1"
+              Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              >
+            AP Gym Management
+          </TextBlock>
+          <StackPanel
+              Grid.Row="0"
+              Grid.Column="2"
+              Orientation="Horizontal">
+            <Button
+                Style="{StaticResource MaterialDesignIconForegroundButton}"
+                ToolTip="Notifications"
+                Margin="0 3 0 0"
+                >
+              <materialDesign:PackIcon Kind="Bell" VerticalAlignment="Center"/>
+            </Button>
+            <Button
+                Style="{StaticResource MaterialDesignIconForegroundButton}"
+                ToolTip="Profile"
+                >
+              <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center"/>
+            </Button>
+          </StackPanel>
+        </Grid>
+      </materialDesign:ColorZone>
+
+      <Grid x:Name="MainBody">
+      </Grid>
+    </DockPanel>
+</Window>
