@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\*.png" />
-    <Resource Include="Resources\Images\*.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MahApps.Metro" Version="2.4.7" />
     <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
   </ItemGroup>
 

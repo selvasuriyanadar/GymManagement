@@ -45,8 +45,8 @@ namespace GymManagementDataModel
     public static Dictionary<PaymentStatus, String> PaymentStatusDict = new Dictionary<PaymentStatus, String>() {
       { PaymentStatus.Paid, "Paid" },
       { PaymentStatus.NotPaid, "Not Paid" },
-      { PaymentStatus.Lent, "Lent Returned" },
-      { PaymentStatus.LentReturned, "Paid" }
+      { PaymentStatus.Lent, "Lent" },
+      { PaymentStatus.LentReturned, "Lent Returned" }
     };
     public enum PaymentStatus
     {

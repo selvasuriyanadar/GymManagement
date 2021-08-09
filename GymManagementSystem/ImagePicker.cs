@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace GymManagementSystem
 {
@@ -7,9 +8,9 @@ namespace GymManagementSystem
   {
     public string? PickAndGetImage()
     {
-      Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+      OpenFileDialog openFileDialog = new OpenFileDialog();
       openFileDialog.Filter = "Only jpg, jpeg or png|*.jpg;*.jpeg;*.png";
-      if (openFileDialog.ShowDialog() == true)
+      if (openFileDialog.ShowDialog() == DialogResult.OK)
       {
         return openFileDialog.FileName;
       }
