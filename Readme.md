@@ -28,6 +28,8 @@
 
   Wix has been used for creating installer for this application.
 
+  Because I love vim and the command line, the application was developed completely from the command line.
+
 ### Some Coolest parts of the application that have been developed
 
   - Navigation
