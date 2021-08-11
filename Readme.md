@@ -38,3 +38,11 @@
   - Composability of data with gui (this is one of the interesting areas where I found writting HILogic to be very helpful)
   - Customised Scroll Viewer (this may be unexpected but a lot of logic has been coded for this functionality)
   - Gui (I disliked MVVM so I am following a Gui crafting pattern very similar to that of react and flutter)
+
+## Screenshots
+
+![Alt text](/../main/screenshots/RegistrationPage.png?raw=true "Registration Page")
+
+![Alt text](/../main/screenshots/ProfilePage.png?raw=true "Profile Page")
+
+![Alt text](/../main/screenshots/Listing.png?raw=true "Listing")
