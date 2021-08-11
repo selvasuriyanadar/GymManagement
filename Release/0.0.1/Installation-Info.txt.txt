@@ -1,0 +1,3 @@
+-> The installer and the application has been successfully tested in windows 10 and 8.1.
+-> dotnet 5 has to be installed on the machine, currently the installer does not intall this dependency automatically.
+-> The installer and the application should work fine on any windows desktop where dotnet 5 is supported.
