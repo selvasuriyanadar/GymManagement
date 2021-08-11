@@ -35,5 +35,6 @@
   - Navigation
   - Payment Process
   - Classification of Payments by Alert Status
+  - Composability of data with gui (this is one of the interesting areas where I found writting HILogic to be very helpful)
   - Customised Scroll Viewer (this may be unexpected but a lot of logic has been coded for this functionality)
   - Gui (I disliked MVVM so I am following a Gui crafting pattern very similar to that of react and flutter)
