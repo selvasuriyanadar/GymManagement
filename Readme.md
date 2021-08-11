@@ -27,3 +27,11 @@
   To arrive at the perfect logic to code I sketch the problem and solve it in paper first then I will code.
 
   Wix has been used for creating installer for this application.
+
+### Some Coolest parts of the application that have been developed
+
+  - Navigation
+  - Payment Process
+  - Classification of Payments by Alert Status
+  - Customised Scroll Viewer (this may be unexpected but a lot of logic has been coded for this functionality)
+  - Gui (I disliked MVVM so I am following a Gui crafting pattern very similar to that of react and flutter)
