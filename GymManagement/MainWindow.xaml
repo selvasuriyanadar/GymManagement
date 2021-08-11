@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:GymManagement"
     mc:Ignorable="d"
+    Icon="./Resources/Icon/GymManagement.ico"
     Title="AP Gym Management" Height="450" Width="800"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
