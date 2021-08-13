@@ -1,57 +1,115 @@
 using System;
+using GymManagementDataModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
 
-namespace GymManagementUserControls
+namespace GymManagementLogic
 {
-  public class InertiaHandler : IDisposable
+  public class Vector
   {
-    public delegate void VoidCallback();
-    public delegate void Scroll(double posH, double posV);
-    VoidCallback DrawDropOver;
-    Scroll scroll;
-    VoidCallback UpdateLeftInc;
-    VoidCallback UpdateRightInc;
+    public double X;
+    public double Y;
 
+    public Vector(double X, double Y)
+    {
+      this.X = X;
+      this.Y = Y;
+    }
+
+    public double Length { get { return Math.Sqrt((X * X) + (Y * Y)); } }
+
+    public static Vector operator /(Vector a, double b)
+    {
+      return new Vector(
+          a.X / b,
+          a.Y / b
+        );
+    }
+
+    public static Vector operator *(Vector a, double b)
+    {
+      return new Vector(
+          a.X * b,
+          a.Y * b
+        );
+    }
+
+    public static Vector operator -(Vector a)
+    {
+      return new Vector(
+          -a.X,
+          -a.Y
+        );
+    }
+
+    public static Vector operator -(Vector a, Vector b)
+    {
+      return new Vector(
+          a.X - b.X,
+          a.Y - b.Y
+        );
+    }
+
+    public static Vector operator +(Vector a, Vector b)
+    {
+      return new Vector(
+          a.X + b.X,
+          a.Y + b.Y
+        );
+    }
+  }
+
+  public class Point
+  {
+    public double X;
+    public double Y;
+
+    public Point(double X, double Y)
+    {
+      this.X = X;
+      this.Y = Y;
+    }
+
+    public static Vector operator -(Point a, Point b)
+    {
+      return new Vector(
+          a.X - b.X,
+          a.Y - b.Y
+        );
+    }
+  }
+
+  public abstract class ScrollViewerAccessAbstract
+  {
+    public abstract bool IsVerticallyCompletelyUnscrolled();
+    public abstract bool IsVerticallyCompletelyScrolled();
+    public abstract bool IsHorizontallyCompletelyUnscrolled();
+    public abstract bool IsHorizontallyCompletelyScrolled();
+    public abstract bool IsMouseCaptured();
+    public abstract double GetVerticalPosition();
+    public abstract double GetHorizontalPosition();
+    public abstract Point GetScrollerPosition();
+  }
+
+  public class KineticScrolling
+  {
     private double staticFrictionalCoefficient = 0.06;
     private double kineticFrictionalCoefficient = 0.04;
     private double normalForce = 9.8;
     private double relativeMassOfScrollerToHumanFinger = 1.8;
     private double dampingConstant = 0.02;
-    private int framesPerSecond = 60;
     private Vector scrollerVelocity = new Vector(0, 0);
 
     public Finger finger;
     public Driver driver;
-    ScrollViewer scroller;
-    DispatcherTimer animationTimer;
+    ScrollViewerAccessAbstract scroller;
 
-    public InertiaHandler(ScrollViewer scroller,
-        VoidCallback DrawDropOver,
-        Scroll scroll,
-        VoidCallback UpdateLeftInc,
-        VoidCallback UpdateRightInc
+    public KineticScrolling(
+        ScrollViewerAccessAbstract scroller
       )
     {
       this.scroller = scroller;
-      this.DrawDropOver = DrawDropOver;
-      this.scroll = scroll;
-      this.UpdateLeftInc = UpdateLeftInc;
-      this.UpdateRightInc = UpdateRightInc;
-      finger = new Finger(scroller);
+      finger = new Finger(this.scroller);
       driver = new Driver(GetStaticFrictionalForce());
-      animationTimer = new DispatcherTimer();
-      animationTimer.Interval =
-          new TimeSpan(0, 0, 0, 0, 1000 / framesPerSecond);
-      animationTimer.Tick +=
-          new EventHandler(HandleWorldTimerTick);
-      animationTimer.Start();
     }
 
     private double GetStaticFrictionalForce()
@@ -82,11 +140,6 @@ namespace GymManagementUserControls
     private bool IsScrollerFreeFromStaticFriction(Vector force)
     {
       return force.Length > GetStaticFrictionalForce();
-    }
-
-    private bool IsScrollerAtRest()
-    {
-      return scrollerVelocity.Length == 0;
     }
 
     private Vector GetKineticDecceleration(Vector u)
@@ -144,7 +197,12 @@ namespace GymManagementUserControls
       }
     }
 
-    private void DeccelerateScroller()
+    public bool IsScrollerAtRest()
+    {
+      return scrollerVelocity.Length == 0;
+    }
+
+    public void DeccelerateScroller()
     {
       if (scrollerVelocity.Length != 0)
       {
@@ -162,8 +220,8 @@ namespace GymManagementUserControls
 
     private void ElasticallyCollideVertically()
     {
-      if (((scroller.VerticalOffset == 0) && (scrollerVelocity.Y > 0))
-        || ((scroller.VerticalOffset == scroller.ScrollableHeight) && (scrollerVelocity.Y < 0))
+      if (((scroller.IsVerticallyCompletelyUnscrolled()) && (scrollerVelocity.Y > 0))
+        || ((scroller.IsVerticallyCompletelyScrolled()) && (scrollerVelocity.Y < 0))
         )
       {
         scrollerVelocity.Y = -scrollerVelocity.Y;
@@ -172,19 +230,19 @@ namespace GymManagementUserControls
 
     private void ElasticallyCollideHorizontally()
     {
-      if (((scroller.HorizontalOffset == 0) && (scrollerVelocity.X > 0))
-        || ((scroller.HorizontalOffset == scroller.ScrollableWidth) && (scrollerVelocity.X < 0))
+      if (((scroller.IsHorizontallyCompletelyUnscrolled()) && (scrollerVelocity.X > 0))
+        || ((scroller.IsHorizontallyCompletelyScrolled()) && (scrollerVelocity.X < 0))
         )
       {
         scrollerVelocity.X = -scrollerVelocity.X;
       }
     }
 
-    private int PlasticallyCollideVertically()
+    public int PlasticallyCollideVertically()
     {
       int result = 0;
-      if (((scroller.VerticalOffset == 0) && (scrollerVelocity.Y > 0))
-        || ((scroller.VerticalOffset == scroller.ScrollableHeight) && (scrollerVelocity.Y < 0))
+      if (((scroller.IsVerticallyCompletelyUnscrolled()) && (scrollerVelocity.Y > 0))
+        || ((scroller.IsVerticallyCompletelyScrolled()) && (scrollerVelocity.Y < 0))
         )
       {
         if (scrollerVelocity.Y > 0)
@@ -202,11 +260,11 @@ namespace GymManagementUserControls
       return result;
     }
 
-    private int PlasticallyCollideHorizontally()
+    public int PlasticallyCollideHorizontally()
     {
       int result = 0;
-      if (((scroller.HorizontalOffset == 0) && (scrollerVelocity.X > 0))
-        || ((scroller.HorizontalOffset == scroller.ScrollableWidth) && (scrollerVelocity.X < 0))
+      if (((scroller.IsHorizontallyCompletelyUnscrolled()) && (scrollerVelocity.X > 0))
+        || ((scroller.IsHorizontallyCompletelyScrolled()) && (scrollerVelocity.X < 0))
         )
       {
         if (scrollerVelocity.X > 0)
@@ -224,84 +282,32 @@ namespace GymManagementUserControls
       return result;
     }
 
-    private void Halt()
+    public void Halt()
     {
       scrollerVelocity = new Vector(0, 0);
     }
 
-    public void FinishFingerContact()
+    public Point GetScrollerPosition()
     {
-      if (finger.GetMaxDisplacement() == 0)
-      {
-        if (scrollerVelocity.Length != 0)
-        {
-          Halt();
-        }
-        else
-        {
-          DrawDropOver();
-        }
-      }
+      return new Point(
+          scroller.GetHorizontalPosition() - scrollerVelocity.X,
+          scroller.GetVerticalPosition() - scrollerVelocity.Y
+        );
     }
 
-    public void InitiateFingerContact()
+    public void AccelerateByFinger()
     {
-      finger.InitiateFingerContact();
-      if (driver.IsActive())
-      {
-        driver.Disable();
-      }
+      finger.CaptureMotion();
+      AccelerateScrollerHorizontallyByFinger();
+      AccelerateScrollerVerticallyByFinger();
     }
 
-    // All events shall be raised within here
-    private void HandleWorldTimerTick(object sender,
-        EventArgs e)
+    public void AccelerateByDriver()
     {
-        if (scroller.IsMouseCaptured)
-        {
-            finger.CaptureMotion();
-            AccelerateScrollerHorizontallyByFinger();
-            AccelerateScrollerVerticallyByFinger();
-        }
-        else if (driver.IsActive())
-        {
-          var driver_force = driver.GetForce();
-          AccelerateScrollerHorizontally(GetAccelerationByExternalForce(driver_force), driver_force);
-          AccelerateScrollerVertically(GetAccelerationByExternalForce(driver_force), driver_force);
-        }
-
-        if (!IsScrollerAtRest())
-        {
-          DeccelerateScroller();
-          var vert = PlasticallyCollideVertically();
-          var hori = PlasticallyCollideHorizontally();
-          //ElasticallyCollideVertically();
-          //ElasticallyCollideHorizontally();
-
-          scroll(
-              scroller.HorizontalOffset - scrollerVelocity.X,
-              scroller.VerticalOffset - scrollerVelocity.Y
-            );
-
-          if (vert < 0)
-          {
-            UpdateLeftInc();
-          }
-          else if (vert > 0)
-          {
-            UpdateRightInc();
-          }
-        }
+      var driver_force = driver.GetForce();
+      AccelerateScrollerHorizontally(GetAccelerationByExternalForce(driver_force), driver_force);
+      AccelerateScrollerVertically(GetAccelerationByExternalForce(driver_force), driver_force);
     }
-
-    #region IDisposable Members
-
-    public void Dispose()
-    {
-      animationTimer.Stop();
-    }
-
-    #endregion
   }
 
   public class Finger
@@ -314,9 +320,9 @@ namespace GymManagementUserControls
     private Vector acceleration;
     private double massOfFinger = 1;
 
-    ScrollViewer scroller;
+    ScrollViewerAccessAbstract scroller;
 
-    public Finger(ScrollViewer scroller)
+    public Finger(ScrollViewerAccessAbstract scroller)
     {
       this.scroller = scroller;
     }
@@ -325,7 +331,7 @@ namespace GymManagementUserControls
     {
       fingerSlippedHorizontally = false;
       fingerSlippedVertically = false;
-      position = Mouse.GetPosition(scroller);
+      position = scroller.GetScrollerPosition();
       velocity = new Vector(0, 0);
       maxVelocity = new Vector(0, 0);
       acceleration = new Vector(0, 0);
@@ -380,8 +386,8 @@ namespace GymManagementUserControls
 
     private void CheckFingerSlippedHorizontally()
     {
-      if ((scroller.HorizontalOffset == 0 && acceleration.X > 0)
-        || (scroller.HorizontalOffset == scroller.ScrollableWidth && acceleration.X < 0)
+      if ((scroller.IsHorizontallyCompletelyUnscrolled() && acceleration.X > 0)
+        || (scroller.IsHorizontallyCompletelyScrolled() && acceleration.X < 0)
         )
       {
         fingerSlippedHorizontally = true;
@@ -394,8 +400,8 @@ namespace GymManagementUserControls
 
     private void CheckFingerSlippedVertically()
     {
-      if ((scroller.VerticalOffset == 0 && acceleration.Y > 0)
-        || (scroller.VerticalOffset == scroller.ScrollableHeight && acceleration.Y < 0)
+      if ((scroller.IsVerticallyCompletelyUnscrolled() && acceleration.Y > 0)
+        || (scroller.IsVerticallyCompletelyScrolled() && acceleration.Y < 0)
         )
       {
         fingerSlippedVertically = true;
@@ -416,7 +422,7 @@ namespace GymManagementUserControls
 
     public void CaptureMotion()
     {
-      Point currentPoint = Mouse.GetPosition(scroller);
+      Point currentPoint = scroller.GetScrollerPosition();
       Vector currentVelocity = GetVelocity(position, currentPoint);
 
       acceleration = GetAcceleration(velocity, currentVelocity);
