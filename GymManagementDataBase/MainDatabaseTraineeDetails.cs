@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using GymManagementSystem;
 using GymManagementDataModel;
 
-namespace GymManagementApi
+namespace GymManagementDataBase
 {
   public class MainDatabaseTraineeDetails
   {
     MainDatabase main_db = new MainDatabase();
+    SearchDataDatabaseInterface searchDataDatabaseInterface = new SearchDataDatabaseInterface();
 
     // Valid data is assumed
     public void InsertTraineeDetails(TraineeDetails d)
@@ -249,7 +250,7 @@ namespace GymManagementApi
       + sd.GetSearchString();
       long result = 0;
 
-      sd.BindSearchParams(cmd);
+      searchDataDatabaseInterface.BindSearchParams(cmd, sd);
       using (var reader = cmd.ExecuteReader())
       {
         if (reader.Read())
@@ -292,7 +293,7 @@ namespace GymManagementApi
 
       cmd.Parameters.AddWithValue("$offset", offset);
       cmd.Parameters.AddWithValue("$count", count);
-      sd.BindSearchParams(cmd);
+      searchDataDatabaseInterface.BindSearchParams(cmd, sd);
       using (var reader = cmd.ExecuteReader())
       {
         while (reader.Read())

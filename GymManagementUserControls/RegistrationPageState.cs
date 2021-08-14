@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using GymManagementDataModel;
 using GymManagementHILogic;
 using GymManagementLogic;
-using GymManagementApi;
 using System.Globalization;
 using MaterialDesignThemes.Wpf;
 
@@ -35,7 +34,7 @@ namespace GymManagementUserControls
 
     RegistrationPageUpdates? reg_page_updates;
 
-    public TraineeRegistrationState(OpenPage openPage, AppStore app_store, string menu) : base(app_store)
+    public TraineeRegistrationState(OpenPage openPage, AppStoreManager appStoreManager, string menu) : base(appStoreManager)
     {
       this.openPage = openPage;
       this.menu = menu;
@@ -139,11 +138,11 @@ namespace GymManagementUserControls
         {
           try
           {
-            app_store.StoreRegisteredTrainee(td);
+            appStoreManager.StoreRegisteredTrainee(td);
             foreach (var pd in pt)
             {
               pd._trainee_id = td._id;
-              app_store.StoreCreatedPayment(pd);
+              appStoreManager.StoreCreatedPayment(pd);
             }
             if (reg_page_updates != null)
             {
@@ -166,12 +165,12 @@ namespace GymManagementUserControls
 
     public void openProfilePage(long trainee_id)
     {
-      openPage("ProfilePage", new ProfilePageState(app_store, menu, trainee_id));
+      openPage("ProfilePage", new ProfilePageState(appStoreManager, menu, trainee_id));
     }
 
     public void openRegistrationPage()
     {
-      openPage("RegistrationPage", new TraineeRegistrationState(openPage, app_store, menu));
+      openPage("RegistrationPage", new TraineeRegistrationState(openPage, appStoreManager, menu));
     }
 
     private void SyncPaymentPanel()

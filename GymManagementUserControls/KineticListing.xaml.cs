@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using GymManagementDataModel;
-using GymManagementDataStore;
 using GymManagementHILogic;
 using GymManagementLogic;
 
@@ -246,8 +245,8 @@ namespace GymManagementUserControls
 
     private void Initialise()
     {
+      CollapseAndStopDropOverDrop();
       InitialiseDropOver();
-      CollapseDropOver();
     }
 
     public KineticListing LoadState(System.Windows.Controls.Primitives.UniformGrid grid, KineticListingState kineticListingState)

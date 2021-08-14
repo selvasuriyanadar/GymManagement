@@ -13,20 +13,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GymManagementDataModel;
-using GymManagementDataStore;
 using GymManagementHILogic;
 
 namespace GymManagementUserControls
 {
-  public class TraineeListingState : TraineeListingStoreState
+  public class TraineeListingState : AppState
   {
     TraineeListingUpdates? trainee_listing_updates;
     TraineeListingGrid listingGrid;
     KineticListingState kineticListingState;
+    TraineeListingStore traineeListingStore;
 
     OpenPage open_page;
 
-    public TraineeListingState(OpenPage open_page, AppStore app_store) : base(app_store)
+    public TraineeListingState(OpenPage open_page, AppStoreManager appStoreManager) : base(appStoreManager)
     {
       this.open_page = open_page;
       listingGrid = new TraineeListingGrid(OpenProfilePage);
@@ -35,21 +35,26 @@ namespace GymManagementUserControls
       sample.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
       var vd = new ListingViewData(3, 3, 12, sample.DesiredSize.Height);
 
-      base.Create(listingGrid, vd);
+      traineeListingStore = new TraineeListingStore(appStoreManager, listingGrid, vd);
       kineticListingState = new KineticListingState(
           "Trainees",
           vd,
-          trainee_listing_store.trainee_details_short_list.GetStateData,
-          trainee_listing_store.trainee_details_short_list.RefreshStill,
-          trainee_listing_store.trainee_details_short_list.Refresh,
-          trainee_listing_store.trainee_details_short_list.IncLeft,
-          trainee_listing_store.trainee_details_short_list.IncRight
+          traineeListingStore.trainee_details_short_list.GetStateData,
+          traineeListingStore.trainee_details_short_list.RefreshStill,
+          traineeListingStore.trainee_details_short_list.Refresh,
+          traineeListingStore.trainee_details_short_list.IncLeft,
+          traineeListingStore.trainee_details_short_list.IncRight
         );
+    }
+
+    public override void Destroy()
+    {
+      traineeListingStore.Destroy();
     }
 
     public void OpenProfilePage(long trainee_id)
     {
-      open_page("ProfilePage", new ProfilePageState(app_store, "Trainees", trainee_id));
+      open_page("ProfilePage", new ProfilePageState(appStoreManager, "Trainees", trainee_id));
     }
 
     public void LoadTraineeListingUpdates(TraineeListingUpdates trainee_listing_updates)

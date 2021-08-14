@@ -20,14 +20,14 @@ namespace GymManagementUserControls
   {
     public OpenPage openPage;
 
-    public DashboardState(OpenPage openPage, AppStore app_store) : base(app_store)
+    public DashboardState(OpenPage openPage, AppStoreManager appStoreManager) : base(appStoreManager)
     {
       this.openPage = openPage;
     }
 
     public void openRegistrationPage()
     {
-      openPage("RegistrationPage", new TraineeRegistrationState(openPage, app_store, "Dashboard"));
+      openPage("RegistrationPage", new TraineeRegistrationState(openPage, appStoreManager, "Dashboard"));
     }
   }
 }

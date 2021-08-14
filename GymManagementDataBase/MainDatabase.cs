@@ -3,7 +3,7 @@ using System.Data.SQLite;
 using GymManagementSystem;
 using GymManagementDataModel;
 
-namespace GymManagementApi
+namespace GymManagementDataBase
 {
   public class MainDatabase
   {

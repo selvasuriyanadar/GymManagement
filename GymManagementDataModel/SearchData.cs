@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 
 namespace GymManagementDataModel
 {
   public class SearchData
   {
     string searchString;
-    Dictionary<string, long> searchParamsLong;
-    Dictionary<string, int> searchParamsInt;
-    Dictionary<string, string> searchParamsString;
+    public Dictionary<string, long> searchParamsLong;
+    public Dictionary<string, int> searchParamsInt;
+    public Dictionary<string, string> searchParamsString;
 
     public SearchData(string ss,
         Dictionary<string, long> spl,
@@ -20,22 +19,6 @@ namespace GymManagementDataModel
       searchParamsLong = spl;
       searchParamsInt = spi;
       searchParamsString = sps;
-    }
-
-    public void BindSearchParams(SQLiteCommand cmd)
-    {
-      foreach (var i in searchParamsLong)
-      {
-        cmd.Parameters.AddWithValue(i.Key, i.Value);
-      }
-      foreach (var i in searchParamsInt)
-      {
-        cmd.Parameters.AddWithValue(i.Key, i.Value);
-      }
-      foreach (var i in searchParamsString)
-      {
-        cmd.Parameters.AddWithValue(i.Key, i.Value);
-      }
     }
 
     public string GetSearchString()

@@ -13,8 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GymManagementDataModel;
-using GymManagementDataStore;
 using GymManagementHILogic;
+using GymManagementLogic;
 using MaterialDesignThemes.Wpf;
 using System.Globalization;
 

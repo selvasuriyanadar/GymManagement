@@ -1,6 +1,6 @@
 ﻿using System;
-using GymManagementDataModel;
 using System.Collections.Generic;
+using GymManagementDataModel;
 
 namespace GymManagementLogic
 {

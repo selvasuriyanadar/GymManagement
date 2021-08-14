@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using GymManagementDataModel;
-using GymManagementDataStore;
 using GymManagementHILogic;
 
 namespace GymManagementUserControls

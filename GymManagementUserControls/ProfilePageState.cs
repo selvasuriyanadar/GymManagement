@@ -13,14 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GymManagementDataModel;
-using GymManagementDataStore;
 using GymManagementHILogic;
 using MaterialDesignThemes.Wpf;
 using System.Globalization;
 
 namespace GymManagementUserControls
 {
-  public class ProfilePageState : ProfileViewStoreState
+  public class ProfilePageState : AppState
   {
     string menu;
     long trainee_id;
@@ -28,8 +27,9 @@ namespace GymManagementUserControls
     ProfilePageUpdates? prof_page_updates;
     ProfilePagePaymentsGrid paymentsGrid = new ProfilePagePaymentsGrid();
     KineticListingState kineticListingState;
+    ProfilePageStore profilePageStore;
 
-    public ProfilePageState(AppStore app_store, string menu, long trainee_id) : base(app_store)
+    public ProfilePageState(AppStoreManager appStoreManager, string menu, long trainee_id) : base(appStoreManager)
     {
       this.menu = menu;
       this.trainee_id = trainee_id;
@@ -48,22 +48,27 @@ namespace GymManagementUserControls
           new Dictionary<string, string>()
         );
 
-      base.Create(paymentsGrid, vd, sd);
+      profilePageStore = new ProfilePageStore(appStoreManager, paymentsGrid, vd, sd);
       kineticListingState = new KineticListingState(
           "Payments",
           vd,
-          profile_view_store.payment_details_short_list.GetStateData,
-          profile_view_store.payment_details_short_list.RefreshStill,
-          profile_view_store.payment_details_short_list.Refresh,
-          profile_view_store.payment_details_short_list.IncLeft,
-          profile_view_store.payment_details_short_list.IncRight
+          profilePageStore.payment_details_short_list.GetStateData,
+          profilePageStore.payment_details_short_list.RefreshStill,
+          profilePageStore.payment_details_short_list.Refresh,
+          profilePageStore.payment_details_short_list.IncLeft,
+          profilePageStore.payment_details_short_list.IncRight
         );
 
       try
       {
-        profile_view_store.FetchTrainee(trainee_id);
+        profilePageStore.FetchTrainee(trainee_id);
       }
       catch {}
+    }
+
+    public override void Destroy()
+    {
+      profilePageStore.Destroy();
     }
 
     public void LoadProfilePageUpdates(ProfilePageUpdates prof_page_updates)
@@ -94,7 +99,7 @@ namespace GymManagementUserControls
     {
       if (prof_page_updates != null)
       {
-        prof_page_updates.UpdateTraineeView(profile_view_store.trainee_details);
+        prof_page_updates.UpdateTraineeView(profilePageStore.trainee_details);
 
         prof_page_updates.UpdateListingControl(paymentsGrid, kineticListingState);
       }

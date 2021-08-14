@@ -23,7 +23,7 @@ namespace GymManagement
 
     MainWindowUpdates main_window_updates;
 
-    public MenuPageNavigation(MainWindowUpdates main_window_updates) : base(new AppStore())
+    public MenuPageNavigation(MainWindowUpdates main_window_updates) : base(new AppStoreManager())
     {
       app_state_nav = new AppStateNavigation(GetMenuState);
       app_state_nav.Navigate("Dashboard");
@@ -47,11 +47,11 @@ namespace GymManagement
       switch (name)
       {
         case "Dashboard":
-          return new DashboardState(OpenPageWithinCurrentMenu, app_store);
+          return new DashboardState(OpenPageWithinCurrentMenu, appStoreManager);
         case "Trainees":
-          return new TraineeListingState(OpenPageWithinCurrentMenu, app_store);
+          return new TraineeListingState(OpenPageWithinCurrentMenu, appStoreManager);
         case "Payments":
-          return new PaymentListingState(app_store);
+          return new PaymentListingState(appStoreManager);
       }
       return null;
     }

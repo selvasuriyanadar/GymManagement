@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using GymManagementDataModel;
-using GymManagementApi;
 
-namespace GymManagementDataStore
+namespace GymManagementLogic
 {
   public class FetchBeyondCapacity : Exception
   {

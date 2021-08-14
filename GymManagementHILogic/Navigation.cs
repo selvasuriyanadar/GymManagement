@@ -87,7 +87,10 @@ namespace GymManagementHILogic
     public void RestoreState((string, string?) comp)
     {
       NavigateToMenu(comp.Item1);
-      OpenPage(comp.Item2);
+      if (comp.Item2 != null)
+        OpenPage(comp.Item2);
+      else
+        ClearOpenPage();
     }
   }
 }

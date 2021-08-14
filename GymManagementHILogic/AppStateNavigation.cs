@@ -1,8 +1,6 @@
 using System;
 using GymManagementDataModel;
-using GymManagementApi;
 using GymManagementLogic;
-using GymManagementDataStore;
 using System.Collections.Generic;
 
 namespace GymManagementHILogic

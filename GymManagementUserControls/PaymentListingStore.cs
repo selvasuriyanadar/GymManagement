@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using GymManagementDataModel;
-using GymManagementApi;
+using GymManagementLogic;
+using GymManagementHILogic;
 
-namespace GymManagementDataStore
+namespace GymManagementUserControls
 {
-  public class PaymentListingStore
+  public class PaymentListingStore : AppStore
   {
     public DataLineTravel<PaymentDetails> payment_details_short_list;
 
-    MainDatabasePaymentDetails main_db_pd;
-
-    public PaymentListingStore(MainDatabasePaymentDetails main_db_pd, DataLineList<PaymentDetails> dll, ListingViewData vd)
+    public PaymentListingStore(AppStoreManager appStoreManager, DataLineList<PaymentDetails> dll, ListingViewData vd) : base(appStoreManager)
     {
-      this.main_db_pd = main_db_pd;
       var sd = new SearchData(
           @"
             ORDER BY date_of_payment DESC
@@ -24,8 +22,8 @@ namespace GymManagementDataStore
         );
       payment_details_short_list = new DataLineTravel<PaymentDetails>(
           sd,
-          main_db_pd.SearchPaymentDetails,
-          main_db_pd.GetPaymentDetailsSearchFullCount,
+          appStoreManager.mainDbPd.SearchPaymentDetails,
+          appStoreManager.mainDbPd.GetPaymentDetailsSearchFullCount,
           dll,
           vd
         );
