@@ -27,6 +27,7 @@ namespace GymManagementUserControls
     string menu;
     TraineeDetails trainee_details = new TraineeDetails();
     RegistrationPaymentGroup pay_group = new RegistrationPaymentGroup();
+    ImagePicker imagePicker = new ImagePicker();
     bool registration_complete = false;
     bool payment_complete = false;
 
@@ -41,7 +42,6 @@ namespace GymManagementUserControls
 
       pay_group.InitiateWithDefaultSelections();
       EnterJoiningDate(DateTime.Today);
-      SelectPhoto(null);
     }
 
     public void LoadRegistrationPageUpdates(
@@ -205,11 +205,15 @@ namespace GymManagementUserControls
       }
     }
 
-    public void SelectPhoto(string? photo_path)
+    public void SelectPhoto()
     {
-      trainee_details.profile_details.photo_path = photo_path;
+      var photo_path = imagePicker.PickAndGetImage();
+      if (photo_path != null)
+      {
+        trainee_details.profile_details.photo_path = photo_path;
 
-      SyncPhoto();
+        SyncPhoto();
+      }
     }
 
     private void SyncRegistrationActionArea()

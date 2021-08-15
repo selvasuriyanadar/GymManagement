@@ -12,14 +12,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GymManagementUserControls;
 using GymManagementHILogic;
 
-namespace GymManagement
+namespace GymManagementUserControls
 {
-  public class MainWindowUpdates
+  public class MenuPageNavigationUpdates
   {
-    MainWindow main_window;
+    MenuPageNavigation menuPageNavigation;
     Dashboard dashboard = new Dashboard();
     RegistrationPage reg_page = new RegistrationPage();
     ProfilePage prof_page = new ProfilePage();
@@ -27,9 +26,9 @@ namespace GymManagement
     PaymentListing payment_listing = new PaymentListing();
     string current_comp;
 
-    public MainWindowUpdates(MainWindow main_window)
+    public MenuPageNavigationUpdates(MenuPageNavigation menuPageNavigation)
     {
-      this.main_window = main_window;
+      this.menuPageNavigation = menuPageNavigation;
     }
 
     private void UnloadCurrentComponent()
@@ -58,7 +57,7 @@ namespace GymManagement
     {
       if (current_comp != null)
         UnloadCurrentComponent();
-      main_window.MainBody.Children.Clear();
+      menuPageNavigation.MainBody.Children.Clear();
       UserControl usc = new UserControl();
       current_comp = comp;
 
@@ -81,14 +80,14 @@ namespace GymManagement
           break;
       }
 
-      main_window.MainBody.Children.Add(usc);
+      menuPageNavigation.MainBody.Children.Add(usc);
     }
 
     public void UpdateListViewMenu(int menu_index)
     {
-      main_window.ListViewMenu.SelectionChanged -= main_window.ListViewMenu_SelectionChanged;
-      main_window.ListViewMenu.SelectedIndex = menu_index;
-      main_window.ListViewMenu.SelectionChanged += main_window.ListViewMenu_SelectionChanged;
+      menuPageNavigation.ListViewMenu.SelectionChanged -= menuPageNavigation.ListViewMenu_SelectionChanged;
+      menuPageNavigation.ListViewMenu.SelectedIndex = menu_index;
+      menuPageNavigation.ListViewMenu.SelectionChanged += menuPageNavigation.ListViewMenu_SelectionChanged;
     }
   }
 }

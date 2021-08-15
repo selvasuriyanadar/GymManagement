@@ -12,28 +12,27 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GymManagementUserControls;
 using GymManagementHILogic;
 
-namespace GymManagement
+namespace GymManagementUserControls
 {
-  public class MenuPageNavigation : AppState
+  public class MenuPageNavigationState : AppState
   {
     AppStateNavigation app_state_nav;
 
-    MainWindowUpdates main_window_updates;
+    MenuPageNavigationUpdates? menuPageNavigationUpdates;
 
-    public MenuPageNavigation(MainWindowUpdates main_window_updates) : base(new AppStoreManager())
+    public MenuPageNavigationState(MenuPageNavigationUpdates menuPageNavigationUpdates) : base(new AppStoreManager())
     {
       app_state_nav = new AppStateNavigation(GetMenuState);
       app_state_nav.Navigate("Dashboard");
       
-      LoadMainWindowUpdates(main_window_updates);
+      LoadMenuPageNavigationUpdates(menuPageNavigationUpdates);
     }
 
-    private void LoadMainWindowUpdates(MainWindowUpdates main_window_updates)
+    private void LoadMenuPageNavigationUpdates(MenuPageNavigationUpdates menuPageNavigationUpdates)
     {
-      this.main_window_updates = main_window_updates;
+      this.menuPageNavigationUpdates = menuPageNavigationUpdates;
       SyncState();
     }
 
@@ -58,8 +57,11 @@ namespace GymManagement
 
     private void RenderComponent()
     {
-      main_window_updates.UpdateListViewMenu(app_state_nav.navigation.GetCurrentMenuIndex());
-      main_window_updates.UpdateMainBody(app_state_nav.navigation.GetActiveComponentName(), (AppState) app_state_nav.app_state_manager.GetState(app_state_nav.navigation));
+      if (menuPageNavigationUpdates != null)
+      {
+        menuPageNavigationUpdates.UpdateListViewMenu(app_state_nav.navigation.GetCurrentMenuIndex());
+        menuPageNavigationUpdates.UpdateMainBody(app_state_nav.navigation.GetActiveComponentName(), (AppState) app_state_nav.app_state_manager.GetState(app_state_nav.navigation));
+      }
     }
 
     public void Navigate(string menu)

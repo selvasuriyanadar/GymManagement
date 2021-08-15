@@ -13,6 +13,5 @@
     <ProjectReference Include="..\GymManagementDataModel\GymManagementDataModel.csproj" />
     <ProjectReference Include="..\GymManagementLogic\GymManagementLogic.csproj" />
     <ProjectReference Include="..\GymManagementHILogic\GymManagementHILogic.csproj" />
-    <ProjectReference Include="..\GymManagementSystem\GymManagementSystem.csproj" />
   </ItemGroup>
 </Project>

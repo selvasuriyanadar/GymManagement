@@ -4,6 +4,7 @@
     <ProjectReference Include="..\GymManagementDataModel\GymManagementDataModel.csproj" />
     <ProjectReference Include="..\GymManagementLogic\GymManagementLogic.csproj" />
     <ProjectReference Include="..\GymManagementDataBase\GymManagementDataBase.csproj" />
+    <ProjectReference Include="..\GymManagementSystem\GymManagementSystem.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

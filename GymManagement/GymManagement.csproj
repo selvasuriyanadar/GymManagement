@@ -22,8 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GymManagementDataModel\GymManagementDataModel.csproj" />
     <ProjectReference Include="..\GymManagementUserControls\GymManagementUserControls.csproj" />
-    <ProjectReference Include="..\GymManagementHILogic\GymManagementHILogic.csproj" />
   </ItemGroup>
 </Project>

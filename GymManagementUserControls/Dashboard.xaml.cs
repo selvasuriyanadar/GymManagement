@@ -30,6 +30,7 @@ namespace GymManagementUserControls
 
     public Dashboard LoadState(DashboardState dashboard_state)
     {
+      UnloadState();
       this.dashboard_state = dashboard_state;
       return this;
     }

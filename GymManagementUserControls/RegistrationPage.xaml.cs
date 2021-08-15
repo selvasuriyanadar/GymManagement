@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using GymManagementDataModel;
 using GymManagementHILogic;
 using GymManagementLogic;
-using GymManagementSystem;
 using MaterialDesignThemes.Wpf;
 using System.Globalization;
 
@@ -59,9 +58,7 @@ namespace GymManagementUserControls
 
     public void ImageButton_Click(object sender, RoutedEventArgs e)
     {
-      var img = (new ImagePicker()).PickAndGetImage();
-      if (img != null)
-        trainee_reg_state.SelectPhoto(img);
+      trainee_reg_state.SelectPhoto();
     }
 
     public void OnSupplementLendAndPayButton_Clicked(object sender, RoutedEventArgs e)
