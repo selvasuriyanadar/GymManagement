@@ -24,7 +24,7 @@ namespace GymManagementUserControls
     KineticListingState kineticListingState;
     PaymentListingStore paymentListingStore;
 
-    public PaymentListingState(AppStoreManager appStoreManager) : base(appStoreManager)
+    public PaymentListingState(AppStoreManager appStoreManager, OpenPage openPage) : base(appStoreManager, openPage)
     {
       var sample = new PaymentCard();
       sample.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));

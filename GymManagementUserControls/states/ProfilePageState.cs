@@ -29,7 +29,7 @@ namespace GymManagementUserControls
     KineticListingState kineticListingState;
     ProfilePageStore profilePageStore;
 
-    public ProfilePageState(AppStoreManager appStoreManager, string menu, long trainee_id) : base(appStoreManager)
+    public ProfilePageState(AppStoreManager appStoreManager, OpenPage openPage, string menu, long trainee_id) : base(appStoreManager, openPage)
     {
       this.menu = menu;
       this.trainee_id = trainee_id;
@@ -75,7 +75,6 @@ namespace GymManagementUserControls
     {
       this.prof_page_updates = prof_page_updates;
       SyncState();
-      this.prof_page_updates.ResetComponent();
     }
 
     public void UnloadProfilePageUpdates()

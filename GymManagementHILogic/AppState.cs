@@ -8,12 +8,14 @@ namespace GymManagementHILogic
   public class AppState
   {
     protected AppStoreManager appStoreManager;
+    protected OpenPage openPage;
 
     public delegate void OpenPage(string page, AppState appState);
 
-    public AppState(AppStoreManager appStoreManager)
+    public AppState(AppStoreManager appStoreManager, OpenPage openPage)
     {
       this.appStoreManager = appStoreManager;
+      this.openPage = openPage;
     }
 
     public virtual bool Match(AppState app_state)

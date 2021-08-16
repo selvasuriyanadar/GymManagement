@@ -37,15 +37,20 @@ namespace GymManagementUserControls
       UpdateHorizontalScrollPosition(0);
     }
 
-    public void LoadGrid(System.Windows.Controls.Primitives.UniformGrid grid, ListingViewData vd)
+    public void LoadGrid(System.Windows.Controls.Primitives.UniformGrid grid)
     {
-      grid.Columns = (int) vd.itemsPerRow;
       kineticListing.scrollViewer.Content = grid;
     }
 
     public void UnloadGrid()
     {
       kineticListing.scrollViewer.Content = null;
+    }
+
+    public void SyncViewData(ListingViewData vd)
+    {
+      var grid = (System.Windows.Controls.Primitives.UniformGrid) kineticListing.scrollViewer.Content;
+      grid.Columns = (int) vd.itemsPerRow;
     }
 
     public void SyncSliderStretch(bool expandSlider, DataLineData dld, long scrollItemPosition)

@@ -6,6 +6,22 @@ using System.Collections.Generic;
 
 namespace GymManagementHILogic
 {
+  public class AppStore
+  {
+    public AppStoreManager appStoreManager;
+
+    public AppStore(AppStoreManager appStoreManager)
+    {
+      this.appStoreManager = appStoreManager;
+      appStoreManager.AddStore(this);
+    }
+
+    public void Destroy()
+    {
+      appStoreManager.Destroy(this);
+    }
+  }
+
   public class AppStoreManager
   {
     List<AppStore> appStores = new List<AppStore>();
@@ -30,22 +46,6 @@ namespace GymManagementHILogic
     public void Destroy(AppStore appStore)
     {
       appStores.Remove(appStore);
-    }
-  }
-
-  public class AppStore
-  {
-    public AppStoreManager appStoreManager;
-
-    public AppStore(AppStoreManager appStoreManager)
-    {
-      this.appStoreManager = appStoreManager;
-      appStoreManager.AddStore(this);
-    }
-
-    public void Destroy()
-    {
-      appStoreManager.Destroy(this);
     }
   }
 }

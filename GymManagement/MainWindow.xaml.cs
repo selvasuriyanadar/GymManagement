@@ -25,7 +25,7 @@ namespace GymManagement
     {
       InitializeComponent();
 
-      root.Children.Add(new MenuPageNavigation());
+      root.Children.Add((new MenuPageNavigation()).LoadState(new MenuPageNavigationState()));
     }
   }
 }

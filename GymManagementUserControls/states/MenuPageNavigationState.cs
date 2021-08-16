@@ -16,24 +16,28 @@ using GymManagementHILogic;
 
 namespace GymManagementUserControls
 {
-  public class MenuPageNavigationState : AppState
+  public class MenuPageNavigationState
   {
     AppStateNavigation app_state_nav;
+    AppStoreManager appStoreManager = new AppStoreManager();
 
     MenuPageNavigationUpdates? menuPageNavigationUpdates;
 
-    public MenuPageNavigationState(MenuPageNavigationUpdates menuPageNavigationUpdates) : base(new AppStoreManager())
+    public MenuPageNavigationState()
     {
       app_state_nav = new AppStateNavigation(GetMenuState);
       app_state_nav.Navigate("Dashboard");
-      
-      LoadMenuPageNavigationUpdates(menuPageNavigationUpdates);
     }
 
-    private void LoadMenuPageNavigationUpdates(MenuPageNavigationUpdates menuPageNavigationUpdates)
+    public void LoadMenuPageNavigationUpdates(MenuPageNavigationUpdates menuPageNavigationUpdates)
     {
       this.menuPageNavigationUpdates = menuPageNavigationUpdates;
       SyncState();
+    }
+
+    public void UnloadMenuPageNavigationUpdates()
+    {
+      this.menuPageNavigationUpdates = null;
     }
 
     private void SyncState()
@@ -46,11 +50,11 @@ namespace GymManagementUserControls
       switch (name)
       {
         case "Dashboard":
-          return new DashboardState(OpenPageWithinCurrentMenu, appStoreManager);
+          return new DashboardState(appStoreManager, OpenPageWithinCurrentMenu);
         case "Trainees":
-          return new TraineeListingState(OpenPageWithinCurrentMenu, appStoreManager);
+          return new TraineeListingState(appStoreManager, OpenPageWithinCurrentMenu);
         case "Payments":
-          return new PaymentListingState(appStoreManager);
+          return new PaymentListingState(appStoreManager, OpenPageWithinCurrentMenu);
       }
       return null;
     }

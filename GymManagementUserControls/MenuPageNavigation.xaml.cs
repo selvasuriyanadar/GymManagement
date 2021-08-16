@@ -22,13 +22,32 @@ namespace GymManagementUserControls
   /// </summary>
   public partial class MenuPageNavigation : UserControl
   {
-    MenuPageNavigationState menuPageNavigationState;
+    MenuPageNavigationState? menuPageNavigationState;
+    MenuPageNavigationUpdates menuPageNavigationUpdates;
+
 
     public MenuPageNavigation()
     {
       InitializeComponent();
 
-      menuPageNavigationState = new MenuPageNavigationState(new MenuPageNavigationUpdates(this));
+      menuPageNavigationUpdates = new MenuPageNavigationUpdates(this);
+    }
+
+    public MenuPageNavigation LoadState(MenuPageNavigationState menuPageNavigationState)
+    {
+      UnloadState();
+      this.menuPageNavigationState = menuPageNavigationState;
+      this.menuPageNavigationState.LoadMenuPageNavigationUpdates(menuPageNavigationUpdates);
+      return this;
+    }
+
+    public void UnloadState()
+    {
+      if (menuPageNavigationState != null)
+      {
+        menuPageNavigationState.UnloadMenuPageNavigationUpdates();
+        menuPageNavigationState = null;
+      }
     }
 
     ///Controller + Events

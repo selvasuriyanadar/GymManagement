@@ -29,12 +29,6 @@ namespace GymManagementUserControls
       this.reg_page = reg_page;
     }
 
-    // Stateless
-    public void ResetComponent()
-    {
-      reg_page.ResetComponent();
-    }
-
     //Updates
 
     public void UpdateRegistrationActionArea(bool registration_complete, bool payment_complete)

@@ -38,6 +38,9 @@ namespace GymManagementUserControls
     public RegistrationPage LoadState(TraineeRegistrationState trainee_reg_state)
     {
       UnloadState();
+
+      ResetComponent();
+
       this.trainee_reg_state = trainee_reg_state;
       this.trainee_reg_state.LoadRegistrationPageUpdates(reg_page_updates);
       return this;

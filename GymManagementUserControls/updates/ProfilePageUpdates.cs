@@ -38,10 +38,6 @@ namespace GymManagementUserControls
       this.prof_page = prof_page;
     }
 
-    public void ResetComponent()
-    {
-    }
-
     public void UpdateListingControl(ProfilePagePaymentsGrid paymentsGrid, KineticListingState kineticListingState)
     {
       var grid = paymentsGrid.GetGrid();

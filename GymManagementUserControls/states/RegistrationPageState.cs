@@ -31,13 +31,10 @@ namespace GymManagementUserControls
     bool registration_complete = false;
     bool payment_complete = false;
 
-    public OpenPage openPage;
-
     RegistrationPageUpdates? reg_page_updates;
 
-    public TraineeRegistrationState(OpenPage openPage, AppStoreManager appStoreManager, string menu) : base(appStoreManager)
+    public TraineeRegistrationState(AppStoreManager appStoreManager, OpenPage openPage, string menu) : base(appStoreManager, openPage)
     {
-      this.openPage = openPage;
       this.menu = menu;
 
       pay_group.InitiateWithDefaultSelections();
@@ -51,7 +48,6 @@ namespace GymManagementUserControls
       this.reg_page_updates = reg_page_updates;
 
       SyncState();
-      reg_page_updates.ResetComponent();
     }
 
     public void UnloadRegistrationPageUpdates()
@@ -165,12 +161,12 @@ namespace GymManagementUserControls
 
     public void openProfilePage(long trainee_id)
     {
-      openPage("ProfilePage", new ProfilePageState(appStoreManager, menu, trainee_id));
+      openPage("ProfilePage", new ProfilePageState(appStoreManager, openPage, menu, trainee_id));
     }
 
     public void openRegistrationPage()
     {
-      openPage("RegistrationPage", new TraineeRegistrationState(openPage, appStoreManager, menu));
+      openPage("RegistrationPage", new TraineeRegistrationState(appStoreManager, openPage, menu));
     }
 
     private void SyncPaymentPanel()

@@ -24,11 +24,8 @@ namespace GymManagementUserControls
     KineticListingState kineticListingState;
     TraineeListingStore traineeListingStore;
 
-    OpenPage open_page;
-
-    public TraineeListingState(OpenPage open_page, AppStoreManager appStoreManager) : base(appStoreManager)
+    public TraineeListingState(AppStoreManager appStoreManager, OpenPage openPage) : base(appStoreManager, openPage)
     {
-      this.open_page = open_page;
       listingGrid = new TraineeListingGrid(OpenProfilePage);
 
       var sample = new TraineeCard();
@@ -54,7 +51,7 @@ namespace GymManagementUserControls
 
     public void OpenProfilePage(long trainee_id)
     {
-      open_page("ProfilePage", new ProfilePageState(appStoreManager, "Trainees", trainee_id));
+      openPage("ProfilePage", new ProfilePageState(appStoreManager, openPage, "Trainees", trainee_id));
     }
 
     public void LoadTraineeListingUpdates(TraineeListingUpdates trainee_listing_updates)

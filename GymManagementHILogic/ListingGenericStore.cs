@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GymManagementDataModel;
 
-namespace GymManagementLogic
+namespace GymManagementHILogic
 {
   public class FetchBeyondCapacity : Exception
   {

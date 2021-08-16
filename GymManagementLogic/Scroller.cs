@@ -1,9 +1,8 @@
 using System;
 using GymManagementDataModel;
-using GymManagementLogic;
 using System.Collections.Generic;
 
-namespace GymManagementHILogic
+namespace GymManagementLogic
 {
   public class Scroller
   {

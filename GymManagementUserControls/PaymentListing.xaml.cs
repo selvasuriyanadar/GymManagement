@@ -17,9 +17,6 @@ using GymManagementHILogic;
 
 namespace GymManagementUserControls
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
   public partial class PaymentListing : UserControl
   {
     PaymentListingState? payment_listing_state;

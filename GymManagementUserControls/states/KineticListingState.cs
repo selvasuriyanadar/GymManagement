@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using GymManagementDataModel;
 using GymManagementHILogic;
+using GymManagementLogic;
 
 namespace GymManagementUserControls
 {
@@ -64,25 +65,36 @@ namespace GymManagementUserControls
       scroller = new Scroller(getDataLineData(), viewData);
     }
 
-    public void LoadKineticListingUpdates(KineticListingUpdates kineticListingUpdates, System.Windows.Controls.Primitives.UniformGrid grid)
+    public void LoadKineticListingUpdates(KineticListingUpdates kineticListingUpdates)
     {
       this.kineticListingUpdates = kineticListingUpdates;
-      kineticListingUpdates.LoadGrid(grid, viewData);
       Sync();
-      kineticListingUpdates.Initialise();
     }
 
     public void UnloadKineticListingUpdates()
     {
-      kineticListingUpdates.UnloadGrid();
       kineticListingUpdates = null;
     }
 
     private void Sync()
     {
+      SyncScrollControl();
+      SyncViewData();
+    }
+
+    private void SyncScrollControl()
+    {
       if (kineticListingUpdates != null)
       {
         kineticListingUpdates.Sync(itemsName, loaderState, expandSlider, getDataLineData(), scroller.GetSP(), scroller.GetVP());
+      }
+    }
+    
+    private void SyncViewData()
+    {
+      if (kineticListingUpdates != null)
+      {
+        kineticListingUpdates.SyncViewData(viewData);
       }
     }
 
@@ -106,7 +118,7 @@ namespace GymManagementUserControls
       if (scrollItemPosition <= dld.FetchEndPosition && scrollItemPosition >= dld.FetchPosition)
       {
         scroller.Set(scrollItemPosition, getDataLineData(), viewData);
-        Sync();
+        SyncScrollControl();
       }
       else if (scrollItemPosition == dld.FetchEndPosition + 1)
       {
@@ -120,7 +132,7 @@ namespace GymManagementUserControls
       {
         refresh(scrollItemPosition, viewData);
         scroller.Reset(getDataLineData(), viewData);
-        Sync();
+        SyncScrollControl();
       }
     }
 
@@ -128,27 +140,27 @@ namespace GymManagementUserControls
     {
       refreshStill(viewData);
       scroller.Reset(getDataLineData(), viewData);
-      Sync();
+      SyncScrollControl();
     }
 
     public void UpdateScrollItemPositionByVerticalScrollPosition(double verticalScrollPosition)
     {
       scroller.Scroll(verticalScrollPosition, getDataLineData(), viewData);
-      Sync();
+      SyncScrollControl();
     }
 
     public void UpdateLeftInc()
     {
       incLeft();
       scroller.Restore(getDataLineData(), viewData);
-      Sync();
+      SyncScrollControl();
     }
 
     public void UpdateRightInc()
     {
       incRight();
       scroller.Restore(getDataLineData(), viewData);
-      Sync();
+      SyncScrollControl();
     }
   }
 }
